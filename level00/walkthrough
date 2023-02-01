@@ -1,0 +1,43 @@
+ssh  level00@192.168.56.101 -p 4242
+password:level00
+
+gdb ./level00
+info func
+disas main
+
+(gdb) x/s 0x80485f0
+0x80485f0:	 '*' <repeats 35 times>
+
+(gdb) x/s 0x8048614
+0x8048614:	 "* \t     -Level00 -\t\t  *"
+
+(gdb) x/s 0x80485f0
+0x80485f0:	 '*' <repeats 35 times>
+
+(gdb) x/s 0x804862c
+0x804862c:	 "Password:"
+
+(gdb) x/s 0x8048636
+0x8048636:	 "%d"
+
+(gdb) x/s 0x80483d0
+0x80483d0 <__isoc99_scanf@plt>:	 "\377%\024\240\004\bh("
+
+x/s 0x8048639
+0x8048639:	 "\nAuthenticated!"
+
+(gdb) x/s 0x8048649
+0x8048649:	 "/bin/sh"
+
+(gdb) x/s 0x8048651
+0x8048651:	 "\nInvalid Password!"
+
+(gdb) p 0x149c
+$1 = 5276
+
+cd ../level01
+cat .pass
+
+uSq2ehEGT6c9S24zbshexZQBXUGrncxn5sD5QfGL
+
+su level01
