@@ -1,0 +1,32 @@
+ssh  level00@192.168.56.101 -p 4242
+password:level00
+
+su level06
+h4GtNnaMs2kZFN92ymTr2DcJHAzMfzLW25Ep59mq
+
+(gdb) b *auth+114 -> breakpoint для изменения ptrace на 0
+(gdb) b *auth+286 -> breakpoint для чтения хешированный переменной
+(gdb) r
+
+***********************************
+*		level06		  *
+***********************************
+-> Enter Login: AAAAAA
+***********************************
+***** NEW ACCOUNT DETECTED ********
+***********************************
+-> Enter Serial: 42
+
+Breakpoint 1, 0x080487ba in auth ()
+(gdb) set $eax=0
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x08048866 in auth ()
+(gdb) x/d $ebp-0x10
+0xfffed638:	6229050
+
+cd ../level07
+
+cat .pass
+GbcPDRgsFK77LNnnuh7QyFYA2942Gp8yKj9KrWD8
